@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QDialog, QWidget, QVBoxLayout, QTabWidget, QDialogBu
 
 from buzz.locale import _
 from buzz.settings.shortcuts import Shortcuts
+from buzz.widgets.preferences_dialog.ai_preferences_widget import AIPreferencesWidget
 from buzz.widgets.preferences_dialog.folder_watch_preferences_widget import (
     FolderWatchPreferencesWidget,
 )
@@ -61,6 +62,9 @@ class PreferencesDialog(QDialog):
         )
         folder_watch_widget.config_changed.connect(self.folder_watch_config_changed)
         tab_widget.addTab(folder_watch_widget, _("Folder Watch"))
+
+        self.ai_preferences_widget = AIPreferencesWidget(parent=self)
+        tab_widget.addTab(self.ai_preferences_widget, _("AI"))
 
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel,
