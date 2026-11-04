@@ -17,6 +17,7 @@ from buzz.ai.providers.anthropic_provider import (
     AnthropicProvider,
 )
 from buzz.ai.providers.base import LLMProvider
+from buzz.ai.providers.ollama_cloud_provider import OllamaCloudProvider
 from buzz.ai.providers.ollama_provider import (
     DEFAULT_OLLAMA_TEMPERATURE,
     DEFAULT_OLLAMA_URL,
@@ -33,6 +34,7 @@ class ProviderId(str, enum.Enum):
     OPENAI = "openai"
     ANTHROPIC = "anthropic"
     OLLAMA = "ollama"
+    OLLAMA_CLOUD = "ollama_cloud"
 
     @property
     def display_name(self) -> str:
@@ -40,7 +42,12 @@ class ProviderId(str, enum.Enum):
             ProviderId.OPENAI: "OpenAI",
             ProviderId.ANTHROPIC: "Anthropic",
             ProviderId.OLLAMA: "Ollama",
+            ProviderId.OLLAMA_CLOUD: "Ollama Cloud",
         }[self]
+
+    @property
+    def needs_api_key(self) -> bool:
+        return self != ProviderId.OLLAMA
 
 
 DEFAULT_PROVIDER = ProviderId.OLLAMA  # local first: nothing leaves the computer
@@ -50,18 +57,22 @@ DEFAULT_MODELS = {
     ProviderId.ANTHROPIC: DEFAULT_ANTHROPIC_MODEL,
     # Local models differ per machine; the user picks one from the list
     ProviderId.OLLAMA: "",
+    # The cloud catalog changes often; the user picks from "Load models"
+    ProviderId.OLLAMA_CLOUD: "",
 }
 
 MODEL_SETTING_KEYS = {
     ProviderId.OPENAI: Settings.Key.AI_MODEL_OPENAI,
     ProviderId.ANTHROPIC: Settings.Key.AI_MODEL_ANTHROPIC,
     ProviderId.OLLAMA: Settings.Key.AI_MODEL_OLLAMA,
+    ProviderId.OLLAMA_CLOUD: Settings.Key.AI_MODEL_OLLAMA_CLOUD,
 }
 
 API_KEY_ENTRIES = {
     ProviderId.OPENAI: Key.OPENAI_API_KEY,
     ProviderId.ANTHROPIC: Key.ANTHROPIC_API_KEY,
     ProviderId.OLLAMA: Key.OLLAMA_API_KEY,
+    ProviderId.OLLAMA_CLOUD: Key.OLLAMA_CLOUD_API_KEY,
 }
 
 
@@ -139,6 +150,9 @@ def load_provider_config(
         config.base_url = settings.value(Settings.Key.AI_OLLAMA_URL, DEFAULT_OLLAMA_URL)
         if config.temperature is None:
             config.temperature = DEFAULT_OLLAMA_TEMPERATURE
+    elif provider_id == ProviderId.OLLAMA_CLOUD:
+        if config.temperature is None:
+            config.temperature = DEFAULT_OLLAMA_TEMPERATURE
     elif provider_id == ProviderId.ANTHROPIC:
         config.effort = settings.value(Settings.Key.AI_ANTHROPIC_EFFORT, DEFAULT_EFFORT)
     return config
@@ -161,6 +175,12 @@ def create_provider(config: ProviderConfig) -> LLMProvider:
     if config.provider_id == ProviderId.OLLAMA:
         return OllamaProvider(
             url=config.base_url or DEFAULT_OLLAMA_URL,
+            api_key=config.api_key,
+            temperature=config.temperature,
+            timeout=config.timeout,
+        )
+    if config.provider_id == ProviderId.OLLAMA_CLOUD:
+        return OllamaCloudProvider(
             api_key=config.api_key,
             temperature=config.temperature,
             timeout=config.timeout,

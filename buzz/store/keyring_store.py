@@ -15,6 +15,7 @@ class Key(enum.Enum):
     OPENAI_API_KEY = "OpenAI API key"
     ANTHROPIC_API_KEY = "Anthropic API key"
     OLLAMA_API_KEY = "Ollama API key"
+    OLLAMA_CLOUD_API_KEY = "Ollama Cloud API key"
 
 
 def _is_linux() -> bool:

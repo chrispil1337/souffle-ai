@@ -2855,3 +2855,11 @@ msgstr ""
 #: buzz/widgets/transcription_viewer/transcription_viewer_widget.py
 msgid "Speaker identification is already in progress in another window"
 msgstr "Die Sprechererkennung läuft bereits in einem anderen Fenster"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Key from ollama.com/settings/keys"
+msgstr "Schlüssel von ollama.com/settings/keys"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Click “Load models” to see the available models"
+msgstr "Auf „Modelle laden“ klicken, um die verfügbaren Modelle zu sehen"

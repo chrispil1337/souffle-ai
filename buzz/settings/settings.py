@@ -106,6 +106,7 @@ class Settings:
         AI_MODEL_OPENAI = "ai/model/openai"
         AI_MODEL_ANTHROPIC = "ai/model/anthropic"
         AI_MODEL_OLLAMA = "ai/model/ollama"
+        AI_MODEL_OLLAMA_CLOUD = "ai/model/ollama-cloud"
         AI_OPENAI_BASE_URL = "ai/openai-base-url"
         AI_OLLAMA_URL = "ai/ollama-url"
         AI_TEMPERATURE = "ai/temperature"

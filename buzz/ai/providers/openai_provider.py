@@ -2,6 +2,7 @@
 """OpenAI (and OpenAI-compatible) chat completions provider."""
 
 import logging
+import re
 from typing import List, Optional
 
 from buzz.ai.providers.base import (
@@ -20,6 +21,14 @@ from buzz.locale import _
 logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT_SECONDS = 600.0
+
+# Some reasoning models (e.g. DeepSeek) served through OpenAI-compatible APIs
+# put their reasoning into the answer as <think>...</think>
+THINK_BLOCK_RE = re.compile(r"<think>.*?</think>\s*", re.DOTALL | re.IGNORECASE)
+
+
+def strip_reasoning(text: str) -> str:
+    return THINK_BLOCK_RE.sub("", text or "").strip()
 
 
 class OpenAIProvider(LLMProvider):
@@ -92,7 +101,7 @@ class OpenAIProvider(LLMProvider):
             raise AIResponseError(
                 _("The AI response was cut off because it was too long.")
             )
-        return (choice.message.content or "") if choice.message else ""
+        return strip_reasoning(choice.message.content or "") if choice.message else ""
 
     def list_models(self) -> List[str]:
         try:

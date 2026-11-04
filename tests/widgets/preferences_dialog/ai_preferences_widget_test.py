@@ -171,3 +171,28 @@ class TestAIPreferencesWidget:
         ]
         assert widget.model_combo_box.currentText() == "model-a"
         assert ai_settings.value(Settings.Key.AI_MODEL_OLLAMA, "") == "model-a"
+
+
+class TestAIPreferencesWidgetOllamaCloud:
+    def test_ollama_cloud_fields(self, qtbot, ai_settings, keyring):
+        widget = make_widget(qtbot, ai_settings)
+        widget.provider_combo_box.setCurrentIndex(
+            widget.provider_combo_box.findData(ProviderId.OLLAMA_CLOUD)
+        )
+
+        assert ai_settings.value(Settings.Key.AI_PROVIDER, "") == "ollama_cloud"
+        assert widget.provider_combo_box.currentText() == "Ollama Cloud"
+        assert not widget.url_line_edit.isVisibleTo(widget)
+        assert not widget.effort_combo_box.isVisibleTo(widget)
+        assert widget.temperature_line_edit.isVisibleTo(widget)
+        assert widget.api_key_label.text() == "API key"
+        assert "consent" in widget.privacy_label.text()
+
+        widget.api_key_line_edit.setText("cloud-key")
+        widget.api_key_line_edit.editingFinished.emit()
+        widget.model_combo_box.setEditText("deepseek-v4.1-flash")
+
+        assert keyring[Key.OLLAMA_CLOUD_API_KEY] == "cloud-key"
+        assert Key.OLLAMA_API_KEY not in keyring
+        assert ai_settings.value(Settings.Key.AI_MODEL_OLLAMA_CLOUD, "") == "deepseek-v4.1-flash"
+        assert ai_settings.value(Settings.Key.AI_MODEL_OLLAMA, "") == ""

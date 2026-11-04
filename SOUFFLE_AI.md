@@ -7,7 +7,9 @@ Soufflé AI ist ein Fork von [Buzz](https://github.com/chidiwilliams/buzz). Er n
 1. **Einstellungen → KI** öffnen.
 2. Anbieter wählen:
    - **Ollama (lokal)**: Alles bleibt auf dem Computer. Ollama von [ollama.com](https://ollama.com) installieren und ein Modell laden, z. B. `ollama pull qwen2.5:14b`.
-   - **OpenAI** oder **Anthropic**: API-Schlüssel eintragen. Er wird im macOS-Schlüsselbund gespeichert.
+   - **Ollama Cloud**: KI-Modelle auf den Servern von Ollama, z. B. DeepSeek, ohne lokale Installation. API-Schlüssel unter [ollama.com/settings/keys](https://ollama.com/settings/keys) erstellen und eintragen, dann **Modelle laden** und das gewünschte Modell wählen.
+   - **OpenAI** oder **Anthropic**: API-Schlüssel eintragen.
+   - API-Schlüssel werden im macOS-Schlüsselbund gespeichert. Bei Cloud-Anbietern fragt die App vor der ersten Übertragung nach Ihrer Zustimmung.
 3. **Modelle laden**, ein Modell wählen und **Verbindung testen**.
 
 ## Transkript nachbearbeiten

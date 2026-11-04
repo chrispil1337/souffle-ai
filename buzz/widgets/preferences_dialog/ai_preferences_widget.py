@@ -67,7 +67,12 @@ class AIPreferencesWidget(QWidget):
         layout.addLayout(form)
 
         self.provider_combo_box = QComboBox(self)
-        for provider_id in (ProviderId.OLLAMA, ProviderId.OPENAI, ProviderId.ANTHROPIC):
+        for provider_id in (
+            ProviderId.OLLAMA,
+            ProviderId.OLLAMA_CLOUD,
+            ProviderId.OPENAI,
+            ProviderId.ANTHROPIC,
+        ):
             self.provider_combo_box.addItem(provider_label(provider_id), provider_id)
         self.provider_combo_box.currentIndexChanged.connect(self.on_provider_changed)
         form.addRow(_("AI provider"), self.provider_combo_box)
@@ -188,6 +193,8 @@ class AIPreferencesWidget(QWidget):
             provider_id = self.provider_id
             is_ollama = provider_id == ProviderId.OLLAMA
             is_anthropic = provider_id == ProviderId.ANTHROPIC
+            # Ollama Cloud and Anthropic have a fixed server address
+            has_url = provider_id in (ProviderId.OLLAMA, ProviderId.OPENAI)
 
             self.api_key_label.setText(_("API key (optional)") if is_ollama else _("API key"))
             self.api_key_line_edit.setText(get_api_key(provider_id))
@@ -196,11 +203,12 @@ class AIPreferencesWidget(QWidget):
                     ProviderId.OPENAI: "sk-...",
                     ProviderId.ANTHROPIC: "sk-ant-...",
                     ProviderId.OLLAMA: _("Only needed behind a proxy"),
+                    ProviderId.OLLAMA_CLOUD: _("Key from ollama.com/settings/keys"),
                 }[provider_id]
             )
 
-            self.url_label.setVisible(not is_anthropic)
-            self.url_line_edit.setVisible(not is_anthropic)
+            self.url_label.setVisible(has_url)
+            self.url_line_edit.setVisible(has_url)
             if is_ollama:
                 self.url_label.setText(_("Ollama URL"))
                 self.url_line_edit.setPlaceholderText(DEFAULT_OLLAMA_URL)
@@ -216,6 +224,9 @@ class AIPreferencesWidget(QWidget):
 
             self.model_combo_box.clear()
             self.model_combo_box.setEditText(get_model(self.settings, provider_id))
+            self.model_combo_box.lineEdit().setPlaceholderText(
+                _("Click “Load models” to see the available models")
+            )
 
             self.effort_label.setVisible(is_anthropic)
             self.effort_combo_box.setVisible(is_anthropic)

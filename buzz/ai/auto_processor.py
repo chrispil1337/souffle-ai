@@ -16,7 +16,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 
 from buzz.ai.controller import PostProcessingController, get_shared_controller
 from buzz.ai.profiles import GENERAL_CLEANUP_ID
-from buzz.ai.providers.registry import ProviderId, load_provider_config
+from buzz.ai.providers.registry import load_provider_config
 from buzz.locale import _
 from buzz.settings.settings import Settings
 from buzz.widgets.ai.cloud_consent import has_consent
@@ -65,7 +65,7 @@ class AutoPostProcessor(QObject):
         config = load_provider_config(self.settings)
         if not config.model:
             return _("No AI model selected. Please choose a model in the AI settings.")
-        if config.provider_id != ProviderId.OLLAMA and not config.api_key:
+        if config.provider_id.needs_api_key and not config.api_key:
             return _("No API key for {provider}. Please enter it in the AI settings.").format(
                 provider=config.provider_id.display_name
             )

@@ -11,6 +11,7 @@ Choose the provider in **Preferences → AI**:
 | Provider | Where the text is processed | API key |
 |---|---|---|
 | **Ollama (local)** – default | On your computer ([ollama.com](https://ollama.com)) | not needed |
+| **Ollama Cloud** | Ollama's servers, directly via `https://ollama.com/v1` – no local Ollama needed | required, from [ollama.com/settings/keys](https://ollama.com/settings/keys) |
 | **OpenAI** | OpenAI servers (or any OpenAI-compatible server via *Base URL*) | required, shared with the OpenAI key used for Whisper API |
 | **Anthropic** | Anthropic servers (Claude models) | required |
 
@@ -20,7 +21,7 @@ Before a transcript is sent to a cloud provider for the first time, you are aske
 
 Settings per provider:
 
-- **Model** – any model offered by the provider. For local German transcripts, models with good German skills work best.
+- **Model** – any model offered by the provider. For Ollama Cloud, **Load models** lists the cloud models (from `https://ollama.com/api/tags`), e.g. the DeepSeek models; use the name exactly as listed. For local German transcripts, models with good German skills work best.
 - **Effort** (Anthropic) – how thoroughly Claude works; higher is slower and more expensive.
 - **Temperature** (OpenAI, Ollama) – lower values stay closer to the transcript. Empty means model default (Ollama: 0.2).
 
