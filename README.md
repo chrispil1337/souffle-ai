@@ -2,7 +2,7 @@
 
 # Buzz
 
-> **Soufflé AI fork:** This repository is a fork of [Buzz](https://github.com/chidiwilliams/buzz) by Chidi Williams that adds AI post-processing of transcripts (OpenAI, Anthropic, Ollama). The fork is licensed under GPL-3.0-or-later (see [LICENSE](LICENSE)); the original MIT notice is kept in [LICENSE-MIT-Buzz](LICENSE-MIT-Buzz). See [NOTICE](NOTICE) for details. Telemetry is disabled by default in this fork.
+> **Soufflé AI fork:** This repository is a fork of [Buzz](https://github.com/chidiwilliams/buzz) by Chidi Williams that adds AI post-processing of transcripts (OpenAI, Anthropic, Ollama). The fork is licensed under GPL-3.0-or-later (see [LICENSE](LICENSE)); the original MIT notice is kept in [LICENSE-MIT-Buzz](LICENSE-MIT-Buzz). See [NOTICE](NOTICE) for details. Telemetry is disabled by default in this fork. German quick guide: [SOUFFLE_AI.md](SOUFFLE_AI.md).
 
 [Documentation](https://chidiwilliams.github.io/buzz/)
 
