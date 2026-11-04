@@ -24,11 +24,12 @@ class TestPreferencesDialog:
 
         tab_widget = dialog.findChild(QTabWidget)
         assert isinstance(tab_widget, QTabWidget)
-        assert tab_widget.count() == 4
+        assert tab_widget.count() == 5
         assert tab_widget.tabText(0) == _("General")
         assert tab_widget.tabText(1) == _("Models")
         assert tab_widget.tabText(2) == _("Shortcuts")
         assert tab_widget.tabText(3) == _("Folder Watch")
+        assert tab_widget.tabText(4) == _("AI")
 
     def test_create_localized(self, qtbot: QtBot, shortcuts, mocker):
         mocker.patch(
@@ -61,7 +62,7 @@ class TestPreferencesDialog:
 
         tab_widget = dialog.findChild(QTabWidget)
         assert isinstance(tab_widget, QTabWidget)
-        assert tab_widget.count() == 4
+        assert tab_widget.count() == 5
         assert tab_widget.tabText(0) == "Vispārīgi"
         assert tab_widget.tabText(1) == "Modeļi"
         assert tab_widget.tabText(2) == "Īsinājumi"
