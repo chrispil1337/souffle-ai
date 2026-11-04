@@ -147,7 +147,13 @@ class AIPreferencesWidget(QWidget):
         self.auto_profile_combo_box = QComboBox(automation_box)
         self.load_auto_profiles()
         self.auto_profile_combo_box.currentIndexChanged.connect(self.on_auto_profile_changed)
-        automation_layout.addRow(_("Profile"), self.auto_profile_combo_box)
+        self.edit_profiles_button = QPushButton(_("Edit profiles…"), automation_box)
+        self.edit_profiles_button.clicked.connect(self.on_edit_profiles_clicked)
+        profile_row = QHBoxLayout()
+        profile_row.setContentsMargins(0, 0, 0, 0)
+        profile_row.addWidget(self.auto_profile_combo_box, 1)
+        profile_row.addWidget(self.edit_profiles_button)
+        automation_layout.addRow(_("Profile"), profile_row)
         auto_hint = QLabel(
             _(
                 "Runs after each completed transcription, one at a time. With a cloud "
@@ -278,6 +284,12 @@ class AIPreferencesWidget(QWidget):
         self.auto_profile_combo_box.setCurrentIndex(max(index, 0))
         self.auto_profile_combo_box.blockSignals(False)
         self.auto_profile_combo_box.setEnabled(self.auto_process_check_box.isChecked())
+
+    def on_edit_profiles_clicked(self) -> None:
+        from buzz.widgets.ai.ai_profile_editor_dialog import AIProfileEditorDialog
+
+        AIProfileEditorDialog(parent=self).exec()
+        self.load_auto_profiles()
 
     def on_auto_process_toggled(self, checked: bool) -> None:
         self.settings.set_value(Settings.Key.AI_AUTO_PROCESS, checked)

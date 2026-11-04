@@ -128,6 +128,9 @@ class AIPostProcessingWindow(QWidget):
         self.profile_combo_box = QComboBox(self)
         self.profile_combo_box.setMinimumWidth(240)
         run_row.addWidget(self.profile_combo_box)
+        self.edit_profiles_button = QPushButton(_("Edit profiles…"), self)
+        self.edit_profiles_button.clicked.connect(self.on_edit_profiles_clicked)
+        run_row.addWidget(self.edit_profiles_button)
         self.provider_label = QLabel(self)
         self.provider_label.setStyleSheet("color: gray;")
         run_row.addWidget(self.provider_label)
@@ -271,6 +274,17 @@ class AIPostProcessingWindow(QWidget):
                 )
         index = self.profile_combo_box.findData(last)
         self.profile_combo_box.setCurrentIndex(max(index, 0))
+
+    def on_edit_profiles_clicked(self) -> None:
+        from buzz.widgets.ai.ai_profile_editor_dialog import AIProfileEditorDialog
+
+        selected = self.profile_combo_box.currentData()
+        AIProfileEditorDialog(self.profile_store, parent=self).exec()
+        self.profile_store.load()
+        self.load_profiles()
+        index = self.profile_combo_box.findData(selected)
+        if index >= 0:
+            self.profile_combo_box.setCurrentIndex(index)
 
     def load_original(self) -> None:
         segments = self.transcription_service.get_transcription_segments(
