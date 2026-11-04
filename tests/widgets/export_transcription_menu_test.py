@@ -208,3 +208,88 @@ class TestExportTranscriptionMenu:
         default_path = get_save_file_name.call_args.args[2]
         assert transcription.name == title
         assert pathlib.Path(default_path).name == "中文 _ test_#_speakers.docx"
+
+
+class TestExportTranscriptionMenuDocuments:
+    @pytest.fixture()
+    def transcription(self, transcription_dao, transcription_segment_dao) -> Transcription:
+        id = uuid.uuid4()
+        transcription_dao.insert(
+            Transcription(
+                id=str(id),
+                status="completed",
+                file=test_audio_path,
+                task=Task.TRANSCRIBE.value,
+                model_type=ModelType.WHISPER.value,
+                whisper_model_size=WhisperModelSize.TINY.value,
+            )
+        )
+        transcription_segment_dao.insert(TranscriptionSegment(40, 299, "Bien", "", str(id)))
+        transcription_segment_dao.insert(TranscriptionSegment(299, 329, "venue dans", "", str(id)))
+        return transcription_dao.find_by_id(str(id))
+
+    def make_menu(self, qtbot, transcription, transcription_service):
+        translation_signal = TranslationSignal()
+        menu = ExportTranscriptionMenu(
+            transcription, transcription_service, False, translation_signal.translation
+        )
+        qtbot.add_widget(menu)
+        return menu
+
+    def action(self, menu, kind):
+        return next(a for a, k in menu.document_actions.items() if k == kind)
+
+    def test_markdown_and_json_of_original(
+        self, tmp_path, qtbot, transcription, transcription_service, mocker
+    ):
+        import json
+
+        from buzz.export.transcript_export import ExportKind
+
+        menu = self.make_menu(qtbot, transcription, transcription_service)
+        markdown_path = tmp_path / "t.md"
+        mocker.patch(
+            "PyQt6.QtWidgets.QFileDialog.getSaveFileName",
+            return_value=(str(markdown_path), ""),
+        )
+        self.action(menu, ExportKind.ORIGINAL_MARKDOWN).trigger()
+        assert "(00:00) Bien venue dans" in markdown_path.read_text(encoding="utf-8")
+
+        json_path = tmp_path / "t.json"
+        mocker.patch(
+            "PyQt6.QtWidgets.QFileDialog.getSaveFileName",
+            return_value=(str(json_path), ""),
+        )
+        self.action(menu, ExportKind.ORIGINAL_JSON).trigger()
+        data = json.loads(json_path.read_text(encoding="utf-8"))
+        assert [s["text"] for s in data["original"]["segments"]] == ["Bien", "venue dans"]
+
+    def test_ai_exports_are_enabled_once_an_ai_version_exists(
+        self, tmp_path, qtbot, transcription, transcription_service, db, mocker
+    ):
+        import json
+
+        from buzz.db.entity.ai_version import AIVersion, AIVersionSegment
+        from buzz.db.service.ai_version_service import AIVersionService
+        from buzz.export.transcript_export import ExportKind
+
+        menu = self.make_menu(qtbot, transcription, transcription_service)
+        combined = self.action(menu, ExportKind.COMBINED_JSON)
+        assert not combined.isEnabled()
+
+        service = AIVersionService(db)
+        version_id = service.create_version(AIVersion(transcription_id=transcription.id))
+        service.save_result(
+            version_id, [AIVersionSegment(0, "Bien", "Bienvenue")], "# KI", {"summary": "S"}, ""
+        )
+        menu.aboutToShow.emit()
+        assert combined.isEnabled()
+
+        path = tmp_path / "c.json"
+        mocker.patch(
+            "PyQt6.QtWidgets.QFileDialog.getSaveFileName", return_value=(str(path), "")
+        )
+        combined.trigger()
+        data = json.loads(path.read_text(encoding="utf-8"))
+        assert data["ai_version"]["segments"][0]["text"] == "Bienvenue"
+        assert data["ai_version"]["analysis"] == {"summary": "S"}

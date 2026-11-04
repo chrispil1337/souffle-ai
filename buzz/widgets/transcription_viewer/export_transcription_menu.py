@@ -5,6 +5,13 @@ from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QWidget, QMenu, QFileDialog, QMessageBox
 
 from buzz.db.entity.transcription import Transcription
+from buzz.db.service.ai_version_service import AIVersionService
+from buzz.export.transcript_export import (
+    ExportKind,
+    build_export,
+    default_export_path,
+    write_export,
+)
 from buzz.db.service.transcription_service import TranscriptionService
 from buzz.locale import _
 from buzz.paths import safe_filename_component
@@ -53,9 +60,64 @@ class ExportTranscriptionMenu(QMenu):
             parent=self,
         )
         self.addAction(self.speaker_docx_action)
+
+        self.addSeparator()
+        self.document_actions = {}
+        for kind, label in (
+            (ExportKind.ORIGINAL_MARKDOWN, _("Markdown – Text")),
+            (ExportKind.ORIGINAL_JSON, _("JSON – Text")),
+            (ExportKind.COMBINED_MARKDOWN, _("Markdown – AI version and original")),
+            (ExportKind.COMBINED_JSON, _("JSON – AI version and original")),
+        ):
+            action = QAction(text=label, parent=self)
+            self.document_actions[action] = kind
+            self.addAction(action)
+
         self.aboutToShow.connect(self._refresh_speaker_docx_action)
+        self.aboutToShow.connect(self._refresh_ai_actions)
         self._refresh_speaker_docx_action()
+        self._refresh_ai_actions()
         self.triggered.connect(self.on_menu_triggered)
+
+    def _latest_ai_version(self):
+        try:
+            service = AIVersionService.from_transcription_service(self.transcription_service)
+            return service, service.latest_completed_version(self.transcription.id_as_uuid)
+        except Exception:  # noqa: BLE001 - e.g. no database in tests
+            return None, None
+
+    def _refresh_ai_actions(self):
+        _service, version = self._latest_ai_version()
+        for action, kind in self.document_actions.items():
+            action.setEnabled(version is not None or not kind.needs_ai_version)
+
+    def export_document(self, kind: ExportKind, path: str | None = None):
+        """Markdown / JSON export, optionally with the latest AI version."""
+        segments = self.transcription_service.get_transcription_segments(
+            transcription_id=self.transcription.id_as_uuid
+        )
+        segments = sorted(segments, key=lambda s: (s.start_time, s.id))
+        service, version = self._latest_ai_version() if kind.needs_ai_version else (None, None)
+        if kind.needs_ai_version and version is None:
+            return
+        ai_segments = service.get_segments(version.id) if version is not None else None
+
+        if path is None:
+            file_filter = (
+                _("JSON files (*.json)") if kind.extension == "json" else _("Markdown files (*.md)")
+            )
+            path, _selected_filter = QFileDialog.getSaveFileName(
+                self, _("Save File"), default_export_path(self.transcription, kind), file_filter
+            )
+            if not path:
+                return
+        try:
+            write_export(
+                path, build_export(kind, self.transcription, segments, version, ai_segments)
+            )
+        except Exception as exc:  # noqa: BLE001
+            logging.exception("Failed to export document")
+            QMessageBox.critical(self, _("Export Failed"), str(exc))
 
     @staticmethod
     def extract_format_and_segment_key(action_text: str):
@@ -73,6 +135,9 @@ class ExportTranscriptionMenu(QMenu):
     def on_menu_triggered(self, action: QAction):
         if action == self.speaker_docx_action:
             self.export_speakers_docx()
+            return
+        if action in self.document_actions:
+            self.export_document(self.document_actions[action])
             return
 
         segments = [
