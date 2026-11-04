@@ -296,24 +296,34 @@ def render_markdown(
     lines += item_list(_("Open questions"), "open_questions")
 
     lines += [f"## {_('Cleaned transcript')}", ""]
+    lines += render_transcript_paragraphs(segments)
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def render_transcript_paragraphs(segments: Sequence) -> List[str]:
+    """Markdown paragraphs of a transcript; consecutive segments of one
+    speaker form one paragraph. Works with any objects that have
+    ``start_time``, ``speaker`` and ``text``."""
+    lines: List[str] = []
     paragraph: List[str] = []
     current_speaker: Optional[str] = None
     for segment in segments:
-        if not segment.text.strip():
+        text = (segment.text or "").strip()
+        if not text:
             continue
-        if segment.speaker != current_speaker and paragraph:
+        speaker = (getattr(segment, "speaker", "") or "").strip()
+        if speaker != current_speaker and paragraph:
             lines += [" ".join(paragraph), ""]
             paragraph = []
         if not paragraph:
-            stamp = format_timestamp(segment.start_time)
-            head = f"**{segment.speaker}** ({stamp}):" if segment.speaker else f"({stamp})"
-            paragraph.append(head)
-        paragraph.append(segment.text.strip())
-        current_speaker = segment.speaker
+            stamp = format_timestamp(segment.start_time or 0)
+            paragraph.append(f"**{speaker}** ({stamp}):" if speaker else f"({stamp})")
+        paragraph.append(text)
+        current_speaker = speaker
     if paragraph:
         lines += [" ".join(paragraph), ""]
-
-    return "\n".join(lines).rstrip() + "\n"
+    return lines
 
 
 class PostProcessingPipeline:
