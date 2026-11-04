@@ -24,7 +24,7 @@ description: |
   from the Hugging Face repository, and the OpenAI Whisper API.
 grade: stable
 confinement: strict
-license: MIT
+license: GPL-3.0-or-later
 icon: buzz/assets/buzz.svg
 
 platforms:

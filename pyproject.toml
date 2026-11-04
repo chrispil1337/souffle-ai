@@ -7,7 +7,7 @@ authors = [{ name = "Chidi Williams", email = "williamschidi1@gmail.com" }]
 requires-python = ">=3.13,<3.14"
 readme = "README.md"
 # License format change to remove warning in PyPI will cause snap not to build
-license = { text = "MIT" }
+license = { text = "GPL-3.0-or-later" }
 dependencies = [
     "sounddevice>=0.5.6,<0.6",
     "humanize>=4.16.0,<5",

@@ -20,6 +20,7 @@ from buzz.db.dao.transcription_segment_dao import TranscriptionSegmentDAO
 from buzz.db.db import setup_app_db
 from buzz.db.service.transcription_service import TranscriptionService
 from buzz.settings.settings import APP_NAME, Settings
+from buzz.telemetry import is_telemetry_enabled
 
 from buzz.transcriber.transcriber import FileTranscriptionTask
 from buzz.widgets.main_window import MainWindow
@@ -104,9 +105,7 @@ class Application(QApplication):
 
         self.window = MainWindow(transcription_service)
 
-        disable_telemetry = os.getenv("BUZZ_DISABLE_TELEMETRY", None)
-
-        if not disable_telemetry:
+        if is_telemetry_enabled():
             posthog = Posthog(project_api_key='phc_NqZQUw8NcxfSXsbtk5eCFylmCQpp4FuNnd6ocPAzg2f',
                               host='https://us.i.posthog.com')
             posthog.capture(distinct_id=self.settings.get_user_identifier(), event="app_launched", properties={

@@ -2,12 +2,14 @@
 
 # Buzz
 
+> **Soufflé AI fork:** This repository is a fork of [Buzz](https://github.com/chidiwilliams/buzz) by Chidi Williams that adds AI post-processing of transcripts (OpenAI, Anthropic, Ollama). The fork is licensed under GPL-3.0-or-later (see [LICENSE](LICENSE)); the original MIT notice is kept in [LICENSE-MIT-Buzz](LICENSE-MIT-Buzz). See [NOTICE](NOTICE) for details. Telemetry is disabled by default in this fork.
+
 [Documentation](https://chidiwilliams.github.io/buzz/)
 
 Transcribe and translate audio offline on your personal computer. Powered by
 OpenAI's [Whisper](https://github.com/openai/whisper).
 
-![MIT License](https://img.shields.io/badge/license-MIT-green)
+![GPL-3.0 License](https://img.shields.io/badge/license-GPL--3.0-blue)
 [![CI](https://github.com/chidiwilliams/buzz/actions/workflows/ci.yml/badge.svg)](https://github.com/chidiwilliams/buzz/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/github/chidiwilliams/buzz/branch/main/graph/badge.svg?token=YJSB8S2VEP)](https://codecov.io/github/chidiwilliams/buzz)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/chidiwilliams/buzz)

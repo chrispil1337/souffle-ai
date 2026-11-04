@@ -142,7 +142,9 @@ Defaults to [user_cache_dir](https://pypi.org/project/platformdirs/).
 
 **BUZZ_MERGE_REGROUP_RULE** - Custom regroup merge rule to use when combining transcripts with word-level timings. More information on available options [in stable-ts repo](https://github.com/jianfch/stable-ts?tab=readme-ov-file#regrouping-methods). 
 
-**BUZZ_DISABLE_TELEMETRY** - Buzz collects basic OS name and architecture usage statistics to better focus development efforts. This variable lets disable collection of these statistics. Example usage `BUZZ_DISABLE_TELEMETRY=true`.
+**BUZZ_ENABLE_TELEMETRY** - Telemetry is disabled by default in the Soufflé AI fork. Set this variable to opt in to sending basic OS name and architecture usage statistics. Example usage `BUZZ_ENABLE_TELEMETRY=true`.
+
+**BUZZ_DISABLE_TELEMETRY** - Always disables telemetry, even if `BUZZ_ENABLE_TELEMETRY` is set. Example usage `BUZZ_DISABLE_TELEMETRY=true`.
 
 **BUZZ_DISABLE_UPDATE_CHECK** - Disable checks for updates. Example usage `BUZZ_DISABLE_UPDATE_CHECK=true`. Available since `1.4.5`
 

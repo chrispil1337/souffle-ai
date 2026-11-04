@@ -1,0 +1,31 @@
+Soufflé AI
+==========
+
+Soufflé AI is a fork of Buzz (https://github.com/chidiwilliams/buzz).
+
+Copyright (c) 2022 Chidi Williams (original Buzz code, MIT License)
+Copyright (c) 2026 chrispil1337 (modifications and additions)
+
+This fork as a whole is distributed under the GNU General Public License,
+version 3 or (at your option) any later version. See the file LICENSE.
+
+Buzz was originally released under the MIT License. The original copyright
+and permission notice is retained, as the MIT License requires, in the file
+LICENSE-MIT-Buzz. Code taken from Buzz remains available under the MIT
+License as well; new files and modifications made in this fork are licensed
+under GPL-3.0-or-later.
+
+Main changes compared to Buzz:
+- AI post-processing of transcripts (OpenAI, Anthropic, Ollama)
+- Telemetry disabled by default (opt-in via BUZZ_ENABLE_TELEMETRY)
+- Update check points to this fork's releases
+
+Third-party components (git submodules) keep their own licenses:
+- whisper.cpp (https://github.com/ggerganov/whisper.cpp)
+- whisper-diarization (https://github.com/MahmoudAshraf97/whisper-diarization)
+- ctc-forced-aligner (https://github.com/MahmoudAshraf97/ctc-forced-aligner)
+- deepmultilingualpunctuation (https://github.com/oliverguhr/deepmultilingualpunctuation)
+See the license files inside each of those directories.
+
+The graphical user interface uses PyQt6, which is licensed under the GPL-3.0
+(or a commercial license from Riverbank Computing).
