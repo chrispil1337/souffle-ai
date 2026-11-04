@@ -142,3 +142,15 @@ class TestCreateProvider:
         )
         assert isinstance(provider, OllamaProvider)
         assert provider.is_cloud is False
+
+
+def test_sdk_loggers_do_not_log_requests():
+    """At DEBUG level the SDKs would write transcript text to the log file."""
+    import logging
+
+    from buzz.ai.providers import SDK_LOGGERS, quiet_sdk_loggers
+
+    logging.getLogger("openai").setLevel(logging.DEBUG)
+    quiet_sdk_loggers()
+    for name in SDK_LOGGERS:
+        assert logging.getLogger(name).getEffectiveLevel() >= logging.WARNING
