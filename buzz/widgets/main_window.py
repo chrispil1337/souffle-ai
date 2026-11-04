@@ -27,6 +27,7 @@ from buzz.file_transcriber_queue_worker import FileTranscriberQueueWorker
 from buzz.locale import _
 from buzz.plugins.manager import PluginManager
 from buzz.plugins.post_processing import FnRunnable
+from buzz.ai.auto_processor import AutoPostProcessor
 from buzz.settings.settings import APP_NAME, Settings
 from buzz.sleep_inhibitor import SleepInhibitor
 from buzz.update_checker import UpdateChecker, UpdateInfo
@@ -94,6 +95,14 @@ class MainWindow(QMainWindow):
         self.transcription_service = transcription_service
 
         self.plugin_manager = PluginManager(self.transcription_service, self.settings)
+
+        # Automatic AI post-processing of new transcriptions (off by default)
+        self.ai_auto_processor = AutoPostProcessor(
+            self.transcription_service, self.settings, parent=self
+        )
+        self.ai_auto_processor.run_finished.connect(self.on_ai_auto_run_finished)
+        self.ai_auto_processor.run_failed.connect(self.on_ai_auto_run_failed)
+        self.ai_auto_processor.skipped.connect(self.on_ai_auto_run_skipped)
         try:
             self.plugin_manager.initialize()
         except Exception as exc:
@@ -578,7 +587,7 @@ class MainWindow(QMainWindow):
                 lambda: self.plugin_manager.process_completed(task, segments)
             )
             runnable.signals.finished.connect(
-                lambda: self.table_widget.refresh_row(task.uid)
+                lambda: self.on_completed_task_saved(task)
             )
             # Plugin hook errors are caught inside the plugin manager, so an
             # error here means the result could not be saved
@@ -591,7 +600,40 @@ class MainWindow(QMainWindow):
             self.table_widget.refresh_row(task.uid)
         else:
             self.transcription_service.update_transcription_as_completed(task.uid, segments)
-            self.table_widget.refresh_row(task.uid)
+            self.on_completed_task_saved(task)
+
+    def on_completed_task_saved(self, task: FileTranscriptionTask):
+        self.table_widget.refresh_row(task.uid)
+        # Not when Buzz quits right after the transcription (command line use)
+        if self.quit_on_complete:
+            return
+        title = task.display_name or os.path.splitext(
+            os.path.basename(task.original_file_path or task.file_path or "")
+        )[0]
+        try:
+            self.ai_auto_processor.on_transcription_saved(task.uid, title)
+        except Exception as exc:  # noqa: BLE001 - never break saving a transcription
+            logging.error(f"Automatic AI post-processing failed to start: {exc}")
+
+    def show_status_message(self, message: str):
+        self.statusBar().showMessage(message, 15_000)
+
+    def on_ai_auto_run_finished(self, transcription_id: str, title: str, version_id: int):
+        self.show_status_message(
+            _("AI post-processing finished: {name}").format(name=title)
+        )
+
+    def on_ai_auto_run_failed(self, transcription_id: str, title: str, message: str):
+        self.show_status_message(
+            _("AI post-processing failed: {name} – {message}").format(
+                name=title, message=message
+            )
+        )
+
+    def on_ai_auto_run_skipped(self, transcription_id: str, reason: str):
+        self.show_status_message(
+            _("Automatic AI post-processing skipped: {reason}").format(reason=reason)
+        )
 
     def on_task_save_failed(self, task: FileTranscriptionTask, error: str):
         # The save rolled back, so mark the task failed instead of leaving it

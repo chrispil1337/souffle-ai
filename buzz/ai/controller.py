@@ -69,7 +69,8 @@ class PostProcessingController(QObject):
         )
         self.settings = settings or Settings()
         self.profile_store = profile_store or ProfileStore()
-        self.thread_pool = thread_pool or QThreadPool.globalInstance()
+        # None: every run gets its own daemon thread (see ``start_job``)
+        self.thread_pool = thread_pool
         self._jobs: Dict[int, CallableJob] = {}
         self._relays: Dict[int, _JobRelay] = {}
 

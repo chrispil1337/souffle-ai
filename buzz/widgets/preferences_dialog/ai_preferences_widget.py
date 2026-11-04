@@ -6,7 +6,9 @@ from typing import List, Optional
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QComboBox,
+    QGroupBox,
     QFormLayout,
     QHBoxLayout,
     QLabel,
@@ -17,6 +19,7 @@ from PyQt6.QtWidgets import (
 )
 
 from buzz.ai.jobs import CallableJob, error_message, start_job
+from buzz.ai.profiles import GENERAL_CLEANUP_ID, ProfileStore
 from buzz.ai.providers.anthropic_provider import EFFORT_LEVELS
 from buzz.ai.providers.ollama_provider import DEFAULT_OLLAMA_URL
 from buzz.ai.providers.registry import (
@@ -131,9 +134,32 @@ class AIPreferencesWidget(QWidget):
         self.privacy_label.setStyleSheet("color: gray;")
         layout.addWidget(self.privacy_label)
 
-        # Extra sections (e.g. automation) are added by later code to this layout
-        self.extra_layout = QVBoxLayout()
-        layout.addLayout(self.extra_layout)
+        automation_box = QGroupBox(_("Automation"), self)
+        automation_layout = QFormLayout(automation_box)
+        self.auto_process_check_box = QCheckBox(
+            _("Post-process new transcriptions automatically"), automation_box
+        )
+        self.auto_process_check_box.setChecked(
+            bool(self.settings.value(Settings.Key.AI_AUTO_PROCESS, False))
+        )
+        self.auto_process_check_box.toggled.connect(self.on_auto_process_toggled)
+        automation_layout.addRow(self.auto_process_check_box)
+        self.auto_profile_combo_box = QComboBox(automation_box)
+        self.load_auto_profiles()
+        self.auto_profile_combo_box.currentIndexChanged.connect(self.on_auto_profile_changed)
+        automation_layout.addRow(_("Profile"), self.auto_profile_combo_box)
+        auto_hint = QLabel(
+            _(
+                "Runs after each completed transcription, one at a time. With a cloud "
+                "provider this needs your consent, given the first time you post-process "
+                "by hand."
+            ),
+            automation_box,
+        )
+        auto_hint.setWordWrap(True)
+        auto_hint.setStyleSheet("color: gray;")
+        automation_layout.addRow(auto_hint)
+        layout.addWidget(automation_box)
         layout.addStretch(1)
 
         selected = get_selected_provider(self.settings)
@@ -241,6 +267,28 @@ class AIPreferencesWidget(QWidget):
         return create_provider(load_provider_config(self.settings, self.provider_id))
 
     # --- slots ---------------------------------------------------------------
+
+    def load_auto_profiles(self) -> None:
+        current = self.settings.value(Settings.Key.AI_AUTO_PROFILE, GENERAL_CLEANUP_ID)
+        self.auto_profile_combo_box.blockSignals(True)
+        self.auto_profile_combo_box.clear()
+        for profile in ProfileStore().profiles():
+            self.auto_profile_combo_box.addItem(profile.name, profile.id)
+        index = self.auto_profile_combo_box.findData(current)
+        self.auto_profile_combo_box.setCurrentIndex(max(index, 0))
+        self.auto_profile_combo_box.blockSignals(False)
+        self.auto_profile_combo_box.setEnabled(self.auto_process_check_box.isChecked())
+
+    def on_auto_process_toggled(self, checked: bool) -> None:
+        self.settings.set_value(Settings.Key.AI_AUTO_PROCESS, checked)
+        self.auto_profile_combo_box.setEnabled(checked)
+        self.settings_changed.emit()
+
+    def on_auto_profile_changed(self, _index: int) -> None:
+        self.settings.set_value(
+            Settings.Key.AI_AUTO_PROFILE, self.auto_profile_combo_box.currentData()
+        )
+        self.settings_changed.emit()
 
     def on_provider_changed(self, _index: int) -> None:
         self.settings.set_value(Settings.Key.AI_PROVIDER, self.provider_id.value)

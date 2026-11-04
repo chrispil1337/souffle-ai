@@ -1240,3 +1240,84 @@ class TestMainWindowUrlImport:
         assert transcription.name == "audio"
 
         window.close()
+
+
+class TestMainWindowAutomaticAIPostProcessing:
+    @staticmethod
+    def _task_for(transcription: Transcription) -> FileTranscriptionTask:
+        return FileTranscriptionTask(
+            transcription_options=TranscriptionOptions(),
+            file_transcription_options=FileTranscriptionOptions(),
+            model_path="",
+            uid=transcription.id_as_uuid,
+            file_path="/tmp/Baustelle Müller.wav",
+        )
+
+    @pytest.mark.parametrize(
+        "transcription_dao", [[Transcription(status="in_progress")]], indirect=True
+    )
+    def test_completed_transcription_is_handed_to_automation(
+        self, qtbot, transcription_dao, transcription_segment_dao
+    ):
+        window = MainWindow(TranscriptionService(transcription_dao, transcription_segment_dao))
+        qtbot.add_widget(window)
+        transcription = window.table_widget.transcription(window.table_widget.model().index(0, 0))
+
+        with patch.object(window.ai_auto_processor, "on_transcription_saved") as saved:
+            window.on_task_completed(
+                self._task_for(transcription), [Segment(start=0, end=1000, text="Hallo")]
+            )
+
+        saved.assert_called_once_with(transcription.id_as_uuid, "Baustelle Müller")
+        assert transcription_dao.find_by_id(transcription.id).status == "completed"
+        window.close()
+
+    @pytest.mark.parametrize(
+        "transcription_dao", [[Transcription(status="in_progress")]], indirect=True
+    )
+    def test_automation_errors_do_not_break_saving(
+        self, qtbot, transcription_dao, transcription_segment_dao
+    ):
+        window = MainWindow(TranscriptionService(transcription_dao, transcription_segment_dao))
+        qtbot.add_widget(window)
+        transcription = window.table_widget.transcription(window.table_widget.model().index(0, 0))
+
+        with patch.object(
+            window.ai_auto_processor, "on_transcription_saved", side_effect=RuntimeError("boom")
+        ):
+            window.on_task_completed(
+                self._task_for(transcription), [Segment(start=0, end=1000, text="Hallo")]
+            )
+
+        assert transcription_dao.find_by_id(transcription.id).status == "completed"
+        window.close()
+
+    @pytest.mark.parametrize(
+        "transcription_dao", [[Transcription(status="in_progress")]], indirect=True
+    )
+    def test_no_automation_when_quitting_after_transcription(
+        self, qtbot, transcription_dao, transcription_segment_dao
+    ):
+        window = MainWindow(TranscriptionService(transcription_dao, transcription_segment_dao))
+        qtbot.add_widget(window)
+        window.quit_on_complete = True
+        transcription = window.table_widget.transcription(window.table_widget.model().index(0, 0))
+
+        with (
+            patch.object(window.ai_auto_processor, "on_transcription_saved") as saved,
+            patch.object(window, "quit_if_all_tasks_done"),
+        ):
+            window.on_task_completed(self._task_for(transcription), [])
+
+        saved.assert_not_called()
+        window.quit_on_complete = False
+        window.close()
+
+    def test_status_messages(self, qtbot, transcription_service):
+        window = MainWindow(transcription_service)
+        qtbot.add_widget(window)
+        window.ai_auto_processor.run_finished.emit("id", "Baustelle", 1)
+        assert "Baustelle" in window.statusBar().currentMessage()
+        window.ai_auto_processor.skipped.emit("id", "Kein Modell")
+        assert "Kein Modell" in window.statusBar().currentMessage()
+        window.close()

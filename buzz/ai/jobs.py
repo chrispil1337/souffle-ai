@@ -75,7 +75,9 @@ def start_job(
     thread_pool: Optional[QThreadPool] = None,
 ) -> CallableJob:
     """Create, wire and start a job. Keep the returned job referenced until
-    it has finished, otherwise its signals object may be garbage collected."""
+    it has finished, otherwise its signals object may be garbage collected.
+
+    Without ``thread_pool`` the job runs on its own daemon thread."""
     job = CallableJob(fn)
     if on_success is not None:
         job.signals.succeeded.connect(on_success)
@@ -83,7 +85,13 @@ def start_job(
         job.signals.failed.connect(on_failure)
     if on_progress is not None:
         job.signals.progress.connect(on_progress)
-    (thread_pool or QThreadPool.globalInstance()).start(job)
+    if thread_pool is not None:
+        thread_pool.start(job)
+    else:
+        # A daemon thread instead of the global QThreadPool: quitting the app
+        # must not wait for a slow AI request (up to the request timeout).
+        # Signals are delivered to receivers on the UI thread as usual.
+        threading.Thread(target=job.run, name="ai-job", daemon=True).start()
     return job
 
 
