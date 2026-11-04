@@ -101,6 +101,21 @@ class Settings:
         CUDA_PROMPT_SHOWN = "cuda/prompt-shown"
         CUDA_INSTALL_DECLINED = "cuda/install-declined"
 
+        # AI post-processing (Soufflé AI)
+        AI_PROVIDER = "ai/provider"
+        AI_MODEL_OPENAI = "ai/model/openai"
+        AI_MODEL_ANTHROPIC = "ai/model/anthropic"
+        AI_MODEL_OLLAMA = "ai/model/ollama"
+        AI_OPENAI_BASE_URL = "ai/openai-base-url"
+        AI_OLLAMA_URL = "ai/ollama-url"
+        AI_TEMPERATURE = "ai/temperature"
+        AI_ANTHROPIC_EFFORT = "ai/anthropic-effort"
+        AI_REQUEST_TIMEOUT = "ai/request-timeout"
+        AI_AUTO_PROCESS = "ai/auto-process"
+        AI_AUTO_PROFILE = "ai/auto-profile"
+        AI_CLOUD_CONSENT = "ai/cloud-consent"
+        RECORDING_SAVE_AUDIO = "recording-transcriber/save-audio"
+
     def get_user_identifier(self) -> str:
         user_id = self.value(self.Key.USER_IDENTIFIER, "")
         if not user_id:
