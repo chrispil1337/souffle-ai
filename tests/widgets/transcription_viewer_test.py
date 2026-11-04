@@ -85,6 +85,37 @@ class TestTranscriptionViewerWidget:
         editor.model().setData(editor.model().index(0, 3), "Biens")
         widget.close()
 
+    def test_ai_button_opens_one_ai_window(
+            self, qtbot, transcription, transcription_service, shortcuts
+    ):
+        from PyQt6.QtWidgets import QToolButton
+
+        from buzz.ai.controller import reset_shared_controller
+        from buzz.widgets.ai.ai_postprocessing_window import AIPostProcessingWindow
+
+        widget = TranscriptionViewerWidget(
+            transcription, transcription_service, shortcuts
+        )
+        qtbot.add_widget(widget)
+        try:
+            button = widget.findChild(QToolButton, "ai_postprocessing_button")
+            assert button is not None
+            assert button.text() == _("Post-process with AI")
+
+            button.click()
+            ai_window = widget.ai_postprocessing_window
+            assert isinstance(ai_window, AIPostProcessingWindow)
+            assert ai_window.isVisible()
+            assert "Bien" in ai_window.original_text.toPlainText()
+
+            button.click()
+            assert widget.ai_postprocessing_window is ai_window
+
+            widget.close()
+            assert not ai_window.isVisible()
+        finally:
+            reset_shared_controller()
+
     def test_should_resize_segment_text(self, qtbot, transcription, transcription_service):
         transcription_service.copy_transcription_with_segments = MagicMock(return_value=uuid.uuid4())
 

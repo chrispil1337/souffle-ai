@@ -114,6 +114,7 @@ class Settings:
         AI_AUTO_PROCESS = "ai/auto-process"
         AI_AUTO_PROFILE = "ai/auto-profile"
         AI_CLOUD_CONSENT = "ai/cloud-consent"
+        AI_LAST_PROFILE = "ai/last-profile"
         RECORDING_SAVE_AUDIO = "recording-transcriber/save-audio"
 
     def get_user_identifier(self) -> str:

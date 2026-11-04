@@ -72,6 +72,10 @@ class ResizeIcon(Icon):
     def __init__(self, parent: QWidget):
         super().__init__(get_path("assets/resize_black.svg"), parent)
 
+class AIIcon(Icon):
+    def __init__(self, parent: QWidget):
+        super().__init__(get_path("assets/ai_sparkle.svg"), parent)
+
 class SpeakerIdentificationIcon(Icon):
     def __init__(self, parent: QWidget):
         super().__init__(get_path("assets/speaker-identification.svg"), parent)

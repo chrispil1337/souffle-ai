@@ -202,3 +202,35 @@ class PostProcessingController(QObject):
         except Exception as db_exc:  # noqa: BLE001
             logger.error("Saving AI error status failed: %s", db_exc)
         self.failed.emit(version_id, message)
+
+
+_shared_controller: Optional[PostProcessingController] = None
+
+
+def get_shared_controller(transcription_service) -> PostProcessingController:
+    """The app-wide controller, shared by all windows and the automation.
+
+    Runs keep going when the AI window is closed. On first use, runs left over
+    from a previous session (the app was closed while they ran) are marked as
+    failed, as they can not resume.
+    """
+    global _shared_controller
+    if _shared_controller is None:
+        from PyQt6.QtCore import QCoreApplication
+
+        ai_service = AIVersionService.from_transcription_service(transcription_service)
+        ai_service.mark_interrupted_as_failed(_("Interrupted because the app was closed."))
+        _shared_controller = PostProcessingController(
+            transcription_service,
+            ai_service=ai_service,
+            parent=QCoreApplication.instance(),
+        )
+    return _shared_controller
+
+
+def reset_shared_controller() -> None:
+    """For tests."""
+    global _shared_controller
+    if _shared_controller is not None:
+        _shared_controller.cancel_all()
+    _shared_controller = None

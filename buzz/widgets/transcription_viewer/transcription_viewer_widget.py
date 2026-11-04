@@ -43,6 +43,7 @@ from buzz.transcriber.file_transcriber import is_video_file
 from buzz.widgets.audio_player import AudioPlayer
 from buzz.widgets.video_player import VideoPlayer
 from buzz.widgets.icon import (
+    AIIcon,
     FileDownloadIcon,
     TranslateIcon,
     ResizeIcon,
@@ -102,6 +103,7 @@ class TranscriptionViewerWidget(QWidget):
 
         self.transcription_resizer_dialog = None
         self.speaker_identification_dialog = None
+        self.ai_postprocessing_window = None
         self.speaker_identification_button = None
         self.transcriptions_updated_signal = transcriptions_updated_signal
 
@@ -323,6 +325,20 @@ class TranscriptionViewerWidget(QWidget):
         )
         translate_button.clicked.connect(self.on_translate_button_clicked)
         toolbar.addWidget(translate_button)
+
+        self.ai_button = QToolButton()
+        self.ai_button.setText(_("Post-process with AI"))
+        self.ai_button.setObjectName("ai_postprocessing_button")
+        self.ai_button.setIcon(AIIcon(self))
+        self.ai_button.setToolButtonStyle(
+            Qt.ToolButtonStyle.ToolButtonTextBesideIcon
+        )
+        self.ai_button.setToolTip(
+            _("Clean up, structure and summarize the transcript with AI. "
+              "The original stays unchanged.")
+        )
+        self.ai_button.clicked.connect(self.on_ai_button_clicked)
+        toolbar.addWidget(self.ai_button)
 
         resize_button = QToolButton()
         resize_button.setText(_("Resize"))
@@ -1591,6 +1607,23 @@ class TranscriptionViewerWidget(QWidget):
 
         self.transcription_resizer_dialog.show()
 
+    def on_ai_button_clicked(self):
+        from buzz.widgets.ai.ai_postprocessing_window import AIPostProcessingWindow
+
+        if (
+            self.ai_postprocessing_window is not None
+            and not sip.isdeleted(self.ai_postprocessing_window)
+            and self.ai_postprocessing_window.isVisible()
+        ):
+            self._activate_existing_dialog(self.ai_postprocessing_window)
+            return
+
+        self.ai_postprocessing_window = AIPostProcessingWindow(
+            transcription=self.transcription,
+            transcription_service=self.transcription_service,
+        )
+        self.ai_postprocessing_window.show()
+
     def _activate_existing_dialog(self, dialog: QWidget):
         """Restore minimized window, bring to foreground, activate, and beep."""
         QApplication.beep()
@@ -1819,6 +1852,13 @@ class TranscriptionViewerWidget(QWidget):
 
         if self.speaker_identification_dialog:
             self.speaker_identification_dialog.close()
+
+        if (
+            self.ai_postprocessing_window is not None
+            and not sip.isdeleted(self.ai_postprocessing_window)
+        ):
+            # AI runs continue in the background and are saved
+            self.ai_postprocessing_window.close()
 
         self.translator.stop()
         self.translation_thread.quit()
