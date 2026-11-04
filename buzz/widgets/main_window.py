@@ -129,6 +129,7 @@ class MainWindow(QMainWindow):
         )
         self.addToolBar(self.toolbar)
         self.toolbar.update_action_triggered.connect(self.on_update_action_triggered)
+        self.toolbar.recording_saved.connect(self.on_recording_saved)
         self.setUnifiedTitleAndToolBarOnMac(True)
 
         self.preferences = self.load_preferences(settings=self.settings)
@@ -297,6 +298,25 @@ class MainWindow(QMainWindow):
                 source=FileTranscriptionTask.Source.URL_IMPORT,
             )
             self.add_task(task)
+
+    def on_recording_saved(
+        self, path: str, transcription_options: TranscriptionOptions, model_path: str
+    ):
+        """Transcribe a saved live recording like an imported file, so it can
+        be opened, exported and post-processed with AI."""
+        task = FileTranscriptionTask(
+            transcription_options=transcription_options,
+            file_transcription_options=FileTranscriptionOptions(file_paths=[path]),
+            model_path=model_path,
+            file_path=path,
+            source=FileTranscriptionTask.Source.FILE_IMPORT,
+        )
+        self.add_task(task)
+        self.show_status_message(
+            _("Recording saved and added to the transcriptions: {name}").format(
+                name=os.path.basename(path)
+            )
+        )
 
     def on_clear_history_action_triggered(self):
         selected_rows = self.table_widget.selectionModel().selectedRows()

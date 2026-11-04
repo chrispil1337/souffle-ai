@@ -1321,3 +1321,26 @@ class TestMainWindowAutomaticAIPostProcessing:
         window.ai_auto_processor.skipped.emit("id", "Kein Modell")
         assert "Kein Modell" in window.statusBar().currentMessage()
         window.close()
+
+
+class TestMainWindowSavedRecordings:
+    def test_saved_recording_is_queued_as_file_transcription(
+        self, qtbot, transcription_service, transcription_dao
+    ):
+        window = MainWindow(transcription_service)
+        qtbot.add_widget(window)
+        options = TranscriptionOptions(language="de")
+
+        with patch.object(window.transcriber_worker, "add_task") as add_task:
+            window.toolbar.recording_saved.emit("/tmp/Recording 1.wav", options, "/models/turbo")
+
+        task = add_task.call_args.args[0]
+        assert task.file_path == "/tmp/Recording 1.wav"
+        assert task.model_path == "/models/turbo"
+        assert task.transcription_options.language == "de"
+        assert task.source == FileTranscriptionTask.Source.FILE_IMPORT
+        stored = transcription_dao.find_by_id(str(task.uid))
+        assert stored.file == "/tmp/Recording 1.wav"
+        assert stored.status == "queued"
+        assert "Recording 1.wav" in window.statusBar().currentMessage()
+        window.close()

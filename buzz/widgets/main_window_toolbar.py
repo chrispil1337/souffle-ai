@@ -27,6 +27,8 @@ class MainWindowToolbar(ToolBar):
     open_transcript_action_triggered: pyqtSignal
     clear_history_action_triggered: pyqtSignal
     update_action_triggered: pyqtSignal
+    # A live recording was saved to a file: (path, transcription options, model path)
+    recording_saved = pyqtSignal(str, object, str)
 
     def __init__(self, shortcuts: Shortcuts, parent: Optional[QWidget]):
         super().__init__(parent)
@@ -121,6 +123,7 @@ class MainWindowToolbar(ToolBar):
         # Otherwise every closed window stays alive until the app exits, and
         # tearing it down then crashes in PyQt's exit cleanup
         recording_transcriber_window.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+        recording_transcriber_window.recording_saved.connect(self.recording_saved)
         recording_transcriber_window.show()
 
     def set_stop_transcription_action_enabled(self, enabled: bool):

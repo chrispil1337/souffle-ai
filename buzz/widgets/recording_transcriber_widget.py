@@ -16,6 +16,7 @@ from PyQt6.QtGui import QTextCursor, QCloseEvent, QColor
 from PyQt6.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QCheckBox,
     QFormLayout,
     QHBoxLayout,
     QMessageBox,
@@ -72,6 +73,8 @@ class RecordingTranscriberWidget(QWidget):
     device_sample_rate: Optional[int] = None
 
     transcription_stopped = pyqtSignal()
+    # (path to the saved WAV file, transcription options, model path)
+    recording_saved = pyqtSignal(str, object, str)
 
     class RecordingStatus(enum.Enum):
         STOPPED = auto()
@@ -217,6 +220,20 @@ class RecordingTranscriberWidget(QWidget):
 
         recording_options_layout = QFormLayout()
         recording_options_layout.addRow(self.microphone_label, self.audio_devices_combo_box)
+        self.save_audio_check_box = QCheckBox(
+            _("Save recording and transcribe it afterwards (for AI post-processing)")
+        )
+        self.save_audio_check_box.setToolTip(
+            _("The recording is saved as a WAV file and added to the transcription list "
+              "when you stop, using the model and language chosen above.")
+        )
+        self.save_audio_check_box.setChecked(
+            bool(self.settings.value(Settings.Key.RECORDING_SAVE_AUDIO, False))
+        )
+        self.save_audio_check_box.toggled.connect(
+            lambda checked: self.settings.set_value(Settings.Key.RECORDING_SAVE_AUDIO, checked)
+        )
+        recording_options_layout.addRow("", self.save_audio_check_box)
 
         record_button_layout = QHBoxLayout()
         record_button_layout.setContentsMargins(0, 4, 0, 8)
@@ -673,13 +690,25 @@ class RecordingTranscriberWidget(QWidget):
 
         self.transcription_thread = QThread()
 
+        self.recording_model_path = model_path
+        audio_output_path = None
+        if self.save_audio_check_box.isChecked():
+            from buzz.recording_writer import new_recording_path
+
+            try:
+                audio_output_path = new_recording_path()
+            except OSError as exc:
+                logging.error(f"Could not create the recordings folder: {exc}")
+
         self.transcriber = RecordingTranscriber(
             input_device_index=self.selected_device_id,
             sample_rate=self.device_sample_rate,
             transcription_options=self.transcription_options,
             model_path=model_path,
             sounddevice=self.sounddevice,
+            audio_output_path=audio_output_path,
         )
+        self.transcriber.audio_saved.connect(self.on_audio_saved)
 
         self.transcriber.moveToThread(self.transcription_thread)
 
@@ -1118,6 +1147,12 @@ class RecordingTranscriberWidget(QWidget):
 
         # Disable record button until the transcription is actually stopped in the background
         self.record_button.setDisabled(True)
+
+    def on_audio_saved(self, path: str):
+        """Hand the saved recording over to be transcribed as a file."""
+        self.recording_saved.emit(
+            path, self.transcription_options, getattr(self, "recording_model_path", "")
+        )
 
     def on_transcriber_finished(self):
         self.set_recording_status_stopped()

@@ -1723,3 +1723,36 @@ class TestCopyButtonReset:
 
             # qtbot fails the test if the timer fires on the deleted button
             qtbot.wait(2500)
+
+
+class TestRecordingTranscriberWidgetSaveAudio:
+    def make_widget(self, qtbot):
+        with (patch("sounddevice.InputStream", side_effect=MockInputStream),
+              patch("buzz.transcriber.recording_transcriber.RecordingTranscriber.get_device_sample_rate",
+                    return_value=16_000),
+              patch("sounddevice.check_input_settings")):
+            widget = RecordingTranscriberWidget(custom_sounddevice=MockSoundDevice())
+            qtbot.add_widget(widget)
+        return widget
+
+    def test_save_audio_option_is_remembered(self, qtbot, settings):
+        settings.set_value(Settings.Key.RECORDING_SAVE_AUDIO, False)
+        widget = self.make_widget(qtbot)
+        assert not widget.save_audio_check_box.isChecked()
+        widget.save_audio_check_box.setChecked(True)
+        assert Settings().value(Settings.Key.RECORDING_SAVE_AUDIO, False) is True
+        time.sleep(0.5)
+        widget.close()
+        Settings().set_value(Settings.Key.RECORDING_SAVE_AUDIO, False)
+
+    def test_saved_audio_is_handed_on_with_options(self, qtbot):
+        widget = self.make_widget(qtbot)
+        widget.recording_model_path = "/models/large-v3-turbo"
+        with qtbot.waitSignal(widget.recording_saved) as saved:
+            widget.on_audio_saved("/tmp/Recording.wav")
+        path, options, model_path = saved.args
+        assert path == "/tmp/Recording.wav"
+        assert options is widget.transcription_options
+        assert model_path == "/models/large-v3-turbo"
+        time.sleep(0.5)
+        widget.close()

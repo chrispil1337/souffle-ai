@@ -42,6 +42,8 @@ class RecordingTranscriber(QObject):
     amplitude_changed = pyqtSignal(float)
     average_amplitude_changed = pyqtSignal(float)
     queue_size_changed = pyqtSignal(int)
+    # Path of the saved recording, emitted before ``finished``
+    audio_saved = pyqtSignal(str)
     is_running = False
     SAMPLE_RATE = whisper_audio.SAMPLE_RATE
 
@@ -53,9 +55,13 @@ class RecordingTranscriber(QObject):
         model_path: str,
         sounddevice: sounddevice,
         parent: Optional[QObject] = None,
+        audio_output_path: Optional[str] = None,
     ) -> None:
         super().__init__(parent)
         self.settings = Settings()
+        # When set, the whole recording is also saved to this WAV file
+        self.audio_output_path = audio_output_path
+        self.audio_recorder = None
         self.transcriber_mode = list(RecordingTranscriberMode)[
             self.settings.value(key=Settings.Key.RECORDING_TRANSCRIBER_MODE, default_value=0)]
         self.transcription_options = transcription_options
@@ -100,6 +106,7 @@ class RecordingTranscriber(QObject):
             self.input_device_index,
         )
 
+        self._start_audio_recorder()
         try:
             stream = self.sounddevice.InputStream(
                 samplerate=self.sample_rate,
@@ -155,15 +162,38 @@ class RecordingTranscriber(QObject):
                         time.sleep(0.5)
 
         except PortAudioError as exc:
+            self._stop_audio_recorder()
             self.error.emit(str(exc))
             logging.exception("PortAudio error during recording")
             return
         except Exception as exc:
+            self._stop_audio_recorder()
             logging.exception("Unexpected error during recording")
             self.error.emit(str(exc))
             return
 
+        self._stop_audio_recorder()
         self._cleanup_model(model)
+
+    def _start_audio_recorder(self):
+        if not self.audio_output_path:
+            return
+        from buzz.recording_writer import WavRecorder
+
+        try:
+            self.audio_recorder = WavRecorder(self.audio_output_path, self.sample_rate)
+            self.audio_recorder.start()
+        except Exception as exc:  # noqa: BLE001 - recording still works without it
+            logging.error(f"Could not save the recording to a file: {exc}")
+            self.audio_recorder = None
+
+    def _stop_audio_recorder(self):
+        if self.audio_recorder is None:
+            return
+        recorder, self.audio_recorder = self.audio_recorder, None
+        path = recorder.stop()
+        if path:
+            self.audio_saved.emit(path)
 
     def _load_model(self):
         model_path = self.model_path
@@ -411,6 +441,10 @@ class RecordingTranscriber(QObject):
     def stream_callback(self, in_data: np.ndarray, frame_count, time_info, status):
         # Try to enqueue the next block. If the queue is already full, drop the block.
         chunk: np.ndarray = in_data.ravel()
+
+        recorder = self.audio_recorder
+        if recorder is not None:
+            recorder.write(chunk)
 
         amplitude = self.amplitude(chunk)
         self.amplitude_changed.emit(amplitude)
