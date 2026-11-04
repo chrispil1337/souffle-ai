@@ -2138,3 +2138,720 @@ msgstr "Audio konnte nicht geladen werden"
 #: buzz/widgets/audio_file_player_loader.py
 msgid "Audio file not found: {}"
 msgstr "Audiodatei nicht gefunden: {}"
+
+# Soufflé AI: AI post-processing
+
+#: buzz/ai/auto_processor.py buzz/ai/controller.py buzz/ai/providers/base.py
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "No AI model selected. Please choose a model in the AI settings."
+msgstr ""
+"Kein KI-Modell ausgewählt. Bitte wählen Sie ein Modell in den KI-"
+"Einstellungen."
+
+#: buzz/ai/auto_processor.py buzz/ai/providers/anthropic_provider.py
+#: buzz/ai/providers/openai_provider.py
+msgid "No API key for {provider}. Please enter it in the AI settings."
+msgstr ""
+"Kein API-Schlüssel für {provider}. Bitte tragen Sie ihn in den KI-"
+"Einstellungen ein."
+
+#: buzz/ai/auto_processor.py
+msgid ""
+"Automatic post-processing needs your consent to send transcripts to "
+"{provider}. Run the AI post-processing once by hand to give it."
+msgstr ""
+"Die automatische Nachbearbeitung benötigt Ihre Zustimmung, Transkripte an "
+"{provider} zu senden. Starten Sie die KI-Nachbearbeitung einmal von Hand, um "
+"sie zu erteilen."
+
+#: buzz/ai/controller.py
+msgid "Interrupted because the app was closed."
+msgstr "Abgebrochen, weil die App beendet wurde."
+
+#: buzz/ai/controller.py
+msgid "The AI result could not be saved."
+msgstr "Das KI-Ergebnis konnte nicht gespeichert werden."
+
+#: buzz/ai/pipeline.py
+msgid "Tasks"
+msgstr "Aufgaben"
+
+#: buzz/ai/pipeline.py
+msgid "Decisions"
+msgstr "Entscheidungen"
+
+#: buzz/ai/pipeline.py
+msgid "Open questions"
+msgstr "Offene Fragen"
+
+#: buzz/ai/pipeline.py
+msgid "AI post-processing was canceled."
+msgstr "Die KI-Nachbearbeitung wurde abgebrochen."
+
+#: buzz/ai/pipeline.py
+msgid "Merging document"
+msgstr "Dokument wird zusammengeführt"
+
+#: buzz/ai/pipeline.py buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Starting AI post-processing"
+msgstr "KI-Nachbearbeitung wird gestartet"
+
+#: buzz/ai/pipeline.py
+msgid "(no source in the transcript)"
+msgstr "(kein Beleg im Transkript)"
+
+#: buzz/ai/pipeline.py
+msgid "Source"
+msgstr "Quelle"
+
+#: buzz/ai/pipeline.py
+msgid "None mentioned."
+msgstr "Keine genannt."
+
+#: buzz/ai/pipeline.py
+msgid "Cleaned transcript"
+msgstr "Bereinigtes Transkript"
+
+#: buzz/ai/pipeline.py
+msgid "Creating document"
+msgstr "Dokument wird erstellt"
+
+#: buzz/ai/pipeline.py
+msgid "The transcript is empty."
+msgstr "Das Transkript ist leer."
+
+#: buzz/ai/pipeline.py buzz/widgets/ai/ai_postprocessing_window.py
+msgid "AI post-processing"
+msgstr "KI-Nachbearbeitung"
+
+#: buzz/ai/pipeline.py
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+#: buzz/ai/pipeline.py
+msgid "Course of the conversation"
+msgstr "Gesprächsverlauf"
+
+#: buzz/ai/pipeline.py
+msgid ""
+"The AI answer could not be read. Please try again or choose another model."
+msgstr ""
+"Die Antwort der KI konnte nicht gelesen werden. Bitte versuchen Sie es erneut"
+" oder wählen Sie ein anderes Modell."
+
+#: buzz/ai/pipeline.py
+msgid "Cleaning up text ({current}/{total})"
+msgstr "Text wird bereinigt ({current}/{total})"
+
+#: buzz/ai/pipeline.py
+msgid "Creating document ({current}/{total})"
+msgstr "Dokument wird erstellt ({current}/{total})"
+
+#: buzz/ai/pipeline.py
+msgid ""
+"{count} segments were kept unchanged because the AI result looked unreliable."
+msgstr ""
+"{count} Segmente wurden unverändert übernommen, weil das KI-Ergebnis "
+"unzuverlässig wirkte."
+
+#: buzz/ai/pipeline.py
+msgid "{count} items have no source in the transcript. Please check them."
+msgstr ""
+"{count} Einträge haben keinen Beleg im Transkript. Bitte prüfen Sie sie."
+
+#: buzz/ai/pipeline.py
+msgid "Topics"
+msgstr "Themen"
+
+#: buzz/ai/pipeline.py
+msgid "Responsible"
+msgstr "Verantwortlich"
+
+#: buzz/ai/pipeline.py
+msgid "Due"
+msgstr "Fällig"
+
+#: buzz/ai/profiles.py
+msgid "General transcript cleanup"
+msgstr "Allgemeine Transkriptbereinigung"
+
+#: buzz/ai/profiles.py
+msgid "Readable transcript with a short summary."
+msgstr "Gut lesbares Transkript mit kurzer Zusammenfassung."
+
+#: buzz/ai/profiles.py
+msgid "Customer conversation"
+msgstr "Kundengespräch"
+
+#: buzz/ai/profiles.py
+msgid "Customer wishes, agreements and next steps."
+msgstr "Kundenwünsche, Vereinbarungen und nächste Schritte."
+
+#: buzz/ai/profiles.py
+msgid "Meeting minutes"
+msgstr "Meeting-Protokoll"
+
+#: buzz/ai/profiles.py
+msgid "Minutes with agenda items, decisions and tasks."
+msgstr "Protokoll mit Themen, Entscheidungen und Aufgaben."
+
+#: buzz/ai/profiles.py
+msgid "Construction site inspection"
+msgstr "Baustellenbesichtigung"
+
+#: buzz/ai/profiles.py
+msgid "Findings, defects, measurements and responsibilities on site."
+msgstr "Feststellungen, Mängel, Maße und Zuständigkeiten vor Ort."
+
+#: buzz/ai/profiles.py
+msgid "Quote preparation (construction)"
+msgstr "Angebotsvorbereitung (Bau)"
+
+#: buzz/ai/profiles.py
+msgid "Work items, quantities and open points for a quote."
+msgstr "Leistungspositionen, Mengen und offene Punkte für ein Angebot."
+
+#: buzz/ai/profiles.py
+msgid "{name} (copy)"
+msgstr "{name} (Kopie)"
+
+#: buzz/ai/providers/anthropic_provider.py
+msgid "The AI declined to process this transcript."
+msgstr "Die KI hat die Bearbeitung dieses Transkripts abgelehnt."
+
+#: buzz/ai/providers/anthropic_provider.py buzz/ai/providers/openai_provider.py
+msgid "The AI response was cut off because it was too long."
+msgstr "Die Antwort der KI wurde abgeschnitten, weil sie zu lang war."
+
+#: buzz/ai/providers/anthropic_provider.py
+msgid "Anthropic did not answer in time."
+msgstr "Anthropic hat nicht rechtzeitig geantwortet."
+
+#: buzz/ai/providers/anthropic_provider.py buzz/ai/providers/openai_provider.py
+msgid "Unexpected error from {provider}."
+msgstr "Unerwarteter Fehler von {provider}."
+
+#: buzz/ai/providers/anthropic_provider.py buzz/ai/providers/openai_provider.py
+msgid "Could not connect to {provider}. Please check your internet connection."
+msgstr ""
+"Keine Verbindung zu {provider}. Bitte prüfen Sie Ihre Internetverbindung."
+
+#: buzz/ai/providers/anthropic_provider.py buzz/ai/providers/openai_provider.py
+msgid "{provider} rejected the API key. Please check it in the AI settings."
+msgstr ""
+"{provider} hat den API-Schlüssel abgelehnt. Bitte prüfen Sie ihn in den KI-"
+"Einstellungen."
+
+#: buzz/ai/providers/anthropic_provider.py buzz/ai/providers/openai_provider.py
+msgid "{provider} rate limit or quota reached. Please try again later."
+msgstr ""
+"Anfragelimit oder Kontingent bei {provider} erreicht. Bitte versuchen Sie es "
+"später erneut."
+
+#: buzz/ai/providers/anthropic_provider.py buzz/ai/providers/openai_provider.py
+msgid "The model was not found at {provider}. Please choose another model."
+msgstr ""
+"Das Modell wurde bei {provider} nicht gefunden. Bitte wählen Sie ein anderes "
+"Modell."
+
+#: buzz/ai/providers/anthropic_provider.py buzz/ai/providers/openai_provider.py
+msgid "{provider} reported an error (HTTP {status})."
+msgstr "{provider} hat einen Fehler gemeldet (HTTP {status})."
+
+#: buzz/ai/providers/base.py buzz/ai/providers/openai_provider.py
+msgid "The AI returned an empty response."
+msgstr "Die KI hat eine leere Antwort geliefert."
+
+#: buzz/ai/providers/ollama_provider.py
+msgid "Could not connect to Ollama at {url}. Is Ollama installed and running?"
+msgstr ""
+"Keine Verbindung zu Ollama unter {url}. Ist Ollama installiert und gestartet?"
+
+#: buzz/ai/providers/openai_provider.py
+msgid "{provider} did not answer in time."
+msgstr "{provider} hat nicht rechtzeitig geantwortet."
+
+#: buzz/export/transcript_export.py
+msgid "Transcript"
+msgstr "Transkript"
+
+#: buzz/export/transcript_export.py
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Profile"
+msgstr "Profil"
+
+#: buzz/export/transcript_export.py
+msgid "AI model"
+msgstr "KI-Modell"
+
+#: buzz/export/transcript_export.py
+msgid "Created"
+msgstr "Erstellt"
+
+#: buzz/export/transcript_export.py buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Original transcript"
+msgstr "Originaltranskript"
+
+#: buzz/export/transcript_export.py
+msgid "Created with AI post-processing; please check before use."
+msgstr "Mit KI-Nachbearbeitung erstellt; bitte vor der Verwendung prüfen."
+
+#: buzz/export/transcript_export.py
+msgid "AI version"
+msgstr "KI-Version"
+
+#: buzz/export/transcript_export.py
+msgid "Date"
+msgstr "Datum"
+
+#: buzz/export/transcript_export.py
+msgid "Transcription model"
+msgstr "Transkriptionsmodell"
+
+#: buzz/export/transcript_export.py
+msgid "Language"
+msgstr "Sprache"
+
+#: buzz/export/transcript_export.py
+msgid "Edited manually"
+msgstr "Manuell bearbeitet"
+
+#: buzz/export/transcript_export.py
+msgid "yes"
+msgstr "ja"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "The AI did not return this segment. The original text was kept."
+msgstr ""
+"Die KI hat dieses Segment nicht zurückgegeben. Der Originaltext wurde "
+"übernommen."
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "The AI result looked unreliable. The original text was kept."
+msgstr ""
+"Das KI-Ergebnis wirkte unzuverlässig. Der Originaltext wurde übernommen."
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Edit profiles…"
+msgstr "Profile bearbeiten…"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+#: buzz/widgets/transcription_viewer/transcription_viewer_widget.py
+msgid "Post-process with AI"
+msgstr "Mit KI nachbearbeiten"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Delete version"
+msgstr "Version löschen"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Segments"
+msgstr "Segmente"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Preview"
+msgstr "Vorschau"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Document"
+msgstr "Dokument"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Changes"
+msgstr "Änderungen"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "no model selected"
+msgstr "kein Modell ausgewählt"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Delete this AI version? The original transcript is not affected."
+msgstr "Diese KI-Version löschen? Das Originaltranskript bleibt erhalten."
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+#: buzz/widgets/transcription_viewer/export_transcription_menu.py
+msgid "JSON files (*.json)"
+msgstr "JSON-Dateien (*.json)"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+#: buzz/widgets/transcription_viewer/export_transcription_menu.py
+msgid "Markdown files (*.md)"
+msgstr "Markdown-Dateien (*.md)"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "waiting"
+msgstr "wartet"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "running…"
+msgstr "läuft…"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "failed"
+msgstr "fehlgeschlagen"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "canceled"
+msgstr "abgebrochen"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Profile:"
+msgstr "Profil:"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Version:"
+msgstr "Version:"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Markdown – AI version"
+msgstr "Markdown – KI-Version"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+#: buzz/widgets/transcription_viewer/export_transcription_menu.py
+msgid "Markdown – AI version and original"
+msgstr "Markdown – KI-Version und Original"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+#: buzz/widgets/transcription_viewer/export_transcription_menu.py
+msgid "JSON – AI version and original"
+msgstr "JSON – KI-Version und Original"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Markdown – original only"
+msgstr "Markdown – nur Original"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Time"
+msgstr "Zeit"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Original"
+msgstr "Original"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "AI version (editable)"
+msgstr "KI-Version (bearbeitbar)"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "AI document (Markdown, editable)"
+msgstr "KI-Dokument (Markdown, bearbeitbar)"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid ""
+"Choose a profile and click “Post-process with AI”. The original transcript "
+"stays unchanged."
+msgstr ""
+"Wählen Sie ein Profil und klicken Sie auf „Mit KI nachbearbeiten“. Das "
+"Originaltranskript bleibt unverändert."
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "No AI version yet"
+msgstr "Noch keine KI-Version"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "Canceling…"
+msgstr "Wird abgebrochen…"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "AI post-processing – {name}"
+msgstr "KI-Nachbearbeitung – {name}"
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "The change could not be saved."
+msgstr "Die Änderung konnte nicht gespeichert werden."
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "The file could not be written."
+msgstr "Die Datei konnte nicht geschrieben werden."
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "This run was canceled."
+msgstr "Dieser Durchlauf wurde abgebrochen."
+
+#: buzz/widgets/ai/ai_postprocessing_window.py
+msgid "AI post-processing is running…"
+msgstr "KI-Nachbearbeitung läuft…"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "AI profiles"
+msgstr "KI-Profile"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "New"
+msgstr "Neu"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Duplicate"
+msgstr "Duplizieren"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid ""
+"Notes for the text cleanup, e.g. technical terms or names to watch out for."
+msgstr ""
+"Hinweise für die Textbereinigung, z. B. Fachbegriffe oder Namen, auf die zu "
+"achten ist."
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid ""
+"What the document should focus on, e.g. defects, quantities, agreements."
+msgstr ""
+"Worauf sich das Dokument konzentrieren soll, z. B. Mängel, Mengen, "
+"Vereinbarungen."
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "One section title per line"
+msgstr "Ein Abschnittstitel pro Zeile"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Name"
+msgstr "Name"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Description"
+msgstr "Beschreibung"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Cleanup instructions"
+msgstr "Anweisungen zur Bereinigung"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Document instructions"
+msgstr "Anweisungen zum Dokument"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Additional sections"
+msgstr "Zusätzliche Abschnitte"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Reset to default"
+msgstr "Auf Standard zurücksetzen"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "New profile"
+msgstr "Neues Profil"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Please enter a name for the profile."
+msgstr "Bitte geben Sie einen Namen für das Profil ein."
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "These base rules are always added and can not be changed:"
+msgstr "Diese Grundregeln gelten immer und können nicht geändert werden:"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Delete the profile “{name}”?"
+msgstr "Das Profil „{name}“ löschen?"
+
+#: buzz/widgets/ai/ai_profile_editor_dialog.py
+msgid "Undo all changes to the profile “{name}”?"
+msgstr "Alle Änderungen am Profil „{name}“ verwerfen?"
+
+#: buzz/widgets/ai/cloud_consent.py
+msgid "Send transcript to {provider}?"
+msgstr "Transkript an {provider} senden?"
+
+#: buzz/widgets/ai/cloud_consent.py
+msgid ""
+"For AI post-processing, the transcript text is sent to {provider} and processed on their servers. The audio recording is not sent.\n"
+"\n"
+"Only continue if this is allowed for the content of the conversation (e.g. personal data, confidential customer information).\n"
+"\n"
+"For processing that stays on this computer, choose Ollama in the AI settings.\n"
+"\n"
+"Allow sending transcripts to {provider}?"
+msgstr ""
+"Für die KI-Nachbearbeitung wird der Text des Transkripts an {provider} gesendet und dort auf den Servern verarbeitet. Die Audioaufnahme wird nicht gesendet.\n"
+"\n"
+"Fahren Sie nur fort, wenn dies für den Inhalt des Gesprächs zulässig ist (z. B. personenbezogene Daten, vertrauliche Kundeninformationen).\n"
+"\n"
+"Für eine Verarbeitung, die auf diesem Computer bleibt, wählen Sie Ollama in den KI-Einstellungen.\n"
+"\n"
+"Das Senden von Transkripten an {provider} erlauben?"
+
+#: buzz/widgets/main_window.py
+msgid "Recording saved and added to the transcriptions: {name}"
+msgstr "Aufnahme gespeichert und zu den Transkriptionen hinzugefügt: {name}"
+
+#: buzz/widgets/main_window.py
+msgid "AI post-processing finished: {name}"
+msgstr "KI-Nachbearbeitung abgeschlossen: {name}"
+
+#: buzz/widgets/main_window.py
+msgid "AI post-processing failed: {name} – {message}"
+msgstr "KI-Nachbearbeitung fehlgeschlagen: {name} – {message}"
+
+#: buzz/widgets/main_window.py
+msgid "Automatic AI post-processing skipped: {reason}"
+msgstr "Automatische KI-Nachbearbeitung übersprungen: {reason}"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Ollama (local)"
+msgstr "Ollama (lokal)"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "AI provider"
+msgstr "KI-Anbieter"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Server URL"
+msgstr "Server-URL"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Load models"
+msgstr "Modelle laden"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Effort"
+msgstr "Gründlichkeit (Effort)"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Model default"
+msgstr "Modell-Standard"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid ""
+"How thoroughly Claude works. Higher effort is slower and more expensive."
+msgstr ""
+"Wie gründlich Claude arbeitet. Höhere Stufen sind langsamer und teurer."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Temperature"
+msgstr "Temperatur"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid ""
+"Lower values stay closer to the transcript. Leave empty for the model "
+"default."
+msgstr ""
+"Niedrigere Werte bleiben näher am Transkript. Leer lassen für den Modell-"
+"Standard."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Test connection"
+msgstr "Verbindung testen"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Automation"
+msgstr "Automatisierung"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Post-process new transcriptions automatically"
+msgstr "Neue Transkriptionen automatisch nachbearbeiten"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid ""
+"Runs after each completed transcription, one at a time. With a cloud provider"
+" this needs your consent, given the first time you post-process by hand."
+msgstr ""
+"Läuft nach jeder abgeschlossenen Transkription, eine nach der anderen. Bei "
+"einem Cloud-Anbieter ist Ihre Zustimmung nötig, die Sie bei der ersten "
+"manuellen Nachbearbeitung erteilen."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Loading models…"
+msgstr "Modelle werden geladen…"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Testing connection…"
+msgstr "Verbindung wird getestet…"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "No models found."
+msgstr "Keine Modelle gefunden."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Connection successful."
+msgstr "Verbindung erfolgreich."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "API key (optional)"
+msgstr "API-Schlüssel (optional)"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Ollama URL"
+msgstr "Ollama-URL"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid ""
+"Ollama runs AI models on your own computer: transcripts do not leave this "
+"computer."
+msgstr ""
+"Ollama führt KI-Modelle auf Ihrem eigenen Computer aus: Transkripte verlassen"
+" diesen Computer nicht."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Unable to save the API key to the keychain."
+msgstr "Der API-Schlüssel konnte nicht im Schlüsselbund gespeichert werden."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Temperature must be between 0 and 2."
+msgstr "Die Temperatur muss zwischen 0 und 2 liegen."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Only needed behind a proxy"
+msgstr "Nur hinter einem Proxy nötig"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Base URL (optional)"
+msgstr "Basis-URL (optional)"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Temperature must be a number, e.g. 0.2"
+msgstr "Die Temperatur muss eine Zahl sein, z. B. 0,2"
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "{count} models found."
+msgstr "{count} Modelle gefunden."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid "Connected, but the model “{model}” is not available."
+msgstr "Verbunden, aber das Modell „{model}“ ist nicht verfügbar."
+
+#: buzz/widgets/preferences_dialog/ai_preferences_widget.py
+msgid ""
+"With {provider}, transcripts are sent to the provider's servers for "
+"processing. You will be asked for consent before the first transfer. API keys"
+" are stored in the system keychain."
+msgstr ""
+"Bei {provider} werden Transkripte zur Verarbeitung an die Server des "
+"Anbieters gesendet. Vor der ersten Übertragung werden Sie um Zustimmung "
+"gebeten. API-Schlüssel werden im Schlüsselbund des Systems gespeichert."
+
+#: buzz/widgets/preferences_dialog/preferences_dialog.py
+msgid "AI"
+msgstr "KI"
+
+#: buzz/widgets/recording_transcriber_widget.py
+msgid "Save recording and transcribe it afterwards (for AI post-processing)"
+msgstr ""
+"Aufnahme speichern und anschließend transkribieren (für die KI-"
+"Nachbearbeitung)"
+
+#: buzz/widgets/recording_transcriber_widget.py
+msgid ""
+"The recording is saved as a WAV file and added to the transcription list when"
+" you stop, using the model and language chosen above."
+msgstr ""
+"Die Aufnahme wird als WAV-Datei gespeichert und beim Stoppen mit dem oben "
+"gewählten Modell und der Sprache zur Transkriptionsliste hinzugefügt."
+
+#: buzz/widgets/transcription_viewer/export_transcription_menu.py
+msgid "Markdown – Text"
+msgstr "Markdown – Text"
+
+#: buzz/widgets/transcription_viewer/export_transcription_menu.py
+msgid "JSON – Text"
+msgstr "JSON – Text"
+
+#: buzz/widgets/transcription_viewer/transcription_viewer_widget.py
+msgid ""
+"Clean up, structure and summarize the transcript with AI. The original stays "
+"unchanged."
+msgstr ""
+"Transkript mit KI bereinigen, strukturieren und zusammenfassen. Das Original "
+"bleibt unverändert."
+
+#: buzz/widgets/transcription_viewer/transcription_viewer_widget.py
+msgid "Speaker identification is already in progress in another window"
+msgstr "Die Sprechererkennung läuft bereits in einem anderen Fenster"
